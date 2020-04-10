@@ -3,6 +3,8 @@ package com.sisternav.myappointments.ui
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -72,9 +74,43 @@ class CreateAppointmentActivity : AppCompatActivity() {
 
         loadSpecialties()
         listenSpecialtyChanges()
+        listenDoctorAndDateChanges()
+    }
 
-        val doctorOptions = arrayOf("Doctor A", "Doctor B", "Doctor C")
-        spinnerDoctors.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, doctorOptions)
+    private fun loadHours(doctorId:Int, date:String){
+        Toast.makeText(this,"doctor: $doctorId, date: $date",Toast.LENGTH_SHORT).show()
+    }
+
+    private fun listenDoctorAndDateChanges(){
+        //doctors
+        spinnerDoctors.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                adapter: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val doctor = adapter?.getItemAtPosition(position) as Doctor
+                loadHours(doctor.id, etScheduledDate.text.toString())
+            }
+        }
+
+        //scheduled date
+        etScheduledDate.addTextChangedListener(object:TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val doctor = spinnerDoctors.selectedItem as Doctor
+                loadHours(doctor.id, etScheduledDate.text.toString())
+            }
+        })
     }
 
     private fun listenSpecialtyChanges(){

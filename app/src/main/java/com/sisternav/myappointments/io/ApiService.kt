@@ -11,10 +11,13 @@ import retrofit2.http.Path
 interface ApiService {
 
     @GET("specialties")
-    abstract fun getSpecialties() : Call<ArrayList<Specialty>>
+    fun getSpecialties() : Call<ArrayList<Specialty>>
 
     @GET("specialties/{specialty}/doctors")
-    abstract fun getDoctorbySpecialty(@Path("specialty") specialtyId: Int) : Call<ArrayList<Doctor>>
+    fun getDoctorbySpecialty(@Path("specialty") specialtyId: Int) : Call<ArrayList<Doctor>>
+
+    @GET("schedule/hours")
+    fun getHours(@Path("doctor_id") doctorId: Int, @Path("date") date: String) : Call<ArrayList<Doctor>>
 
     companion object Factory{
         private const val BASE_URL = "http://165.227.186.92/api/"
