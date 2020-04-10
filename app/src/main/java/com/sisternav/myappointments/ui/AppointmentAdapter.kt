@@ -1,9 +1,10 @@
-package com.sisternav.myappointments
+package com.sisternav.myappointments.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.sisternav.myappointments.R
 import com.sisternav.myappointments.model.Appointment
 import kotlinx.android.synthetic.main.item_appointment.view.*
 
@@ -19,7 +20,11 @@ class AppointmentAdapter(val appointments:ArrayList<Appointment>) : RecyclerView
     // crear la lista a partir del XML
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_appointment, parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_appointment,
+                parent,
+                false
+            )
         )
     }
     // Número de elementos

@@ -1,10 +1,11 @@
-package com.sisternav.myappointments
+package com.sisternav.myappointments.ui
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.sisternav.myappointments.PreferenceHelper
 import com.sisternav.myappointments.PreferenceHelper.set
+import com.sisternav.myappointments.R
 import kotlinx.android.synthetic.main.activity_menu.*
 
 class MenuActivity : AppCompatActivity() {
@@ -36,7 +37,8 @@ class MenuActivity : AppCompatActivity() {
         val editor = preferences.edit()
         editor.putBoolean("session", false)
         editor.apply()*/
-        val preferences = PreferenceHelper.defaultPrefs(this)
+        val preferences =
+            PreferenceHelper.defaultPrefs(this)
         preferences["session"] = false
     }
 }

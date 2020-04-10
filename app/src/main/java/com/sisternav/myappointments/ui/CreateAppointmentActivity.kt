@@ -1,4 +1,4 @@
-package com.sisternav.myappointments
+package com.sisternav.myappointments.ui
 
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -10,15 +10,26 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
+import com.sisternav.myappointments.R
+import com.sisternav.myappointments.io.ApiService
+import com.sisternav.myappointments.model.Specialty
 import kotlinx.android.synthetic.main.activity_create_appointment.*
 import kotlinx.android.synthetic.main.card_view_step_one.*
 import kotlinx.android.synthetic.main.card_view_step_three.*
 import kotlinx.android.synthetic.main.card_view_step_two.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CreateAppointmentActivity : AppCompatActivity() {
     private val selectedCalendar = Calendar.getInstance()
     private var selectedTimeRadioButton: RadioButton? = null
+
+    private val apiService:ApiService by lazy{
+        ApiService.create()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +48,12 @@ class CreateAppointmentActivity : AppCompatActivity() {
             when {
                 etScheduledDate.text.toString().isEmpty() -> {
                     //etScheduledDate.error = getString(R.string.validate_appointment_date)
-                    Snackbar.make(createAppointmentLinearLayout,R.string.validate_appointment_date,Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(createAppointmentLinearLayout,
+                        R.string.validate_appointment_date,Snackbar.LENGTH_SHORT).show()
                 }
                 selectedTimeRadioButton == null -> {
-                    Snackbar.make(createAppointmentLinearLayout,R.string.validate_appointment_time,Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(createAppointmentLinearLayout,
+                        R.string.validate_appointment_time,Snackbar.LENGTH_SHORT).show()
                 }
                 else -> {
                     showAppointmentDataToConfirm()
@@ -55,11 +68,41 @@ class CreateAppointmentActivity : AppCompatActivity() {
             finish()
         }
 
-        val specialtyOptions = arrayOf("Specialty A", "Specialty B", "Specialty C")
-        spinnerSpecialties.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, specialtyOptions)
+        loadSpecialties()
+
+        loadDoctors()
 
         val doctorOptions = arrayOf("Doctor A", "Doctor B", "Doctor C")
         spinnerDoctors.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, doctorOptions)
+    }
+
+    private fun loadDoctors(){
+
+    }
+
+    private fun loadSpecialties(){
+        val call = apiService.getSpecialties()
+        call.enqueue(object: Callback<ArrayList<Specialty>> {
+            override fun onFailure(call: Call<ArrayList<Specialty>>, t: Throwable) {
+                Toast.makeText(this@CreateAppointmentActivity,getString(R.string.error_loading_specialties),Toast.LENGTH_SHORT ).show()
+                finish()
+            }
+
+            override fun onResponse(
+                call: Call<ArrayList<Specialty>>,
+                response: Response<ArrayList<Specialty>>
+            ) {
+                if(response.isSuccessful){ // si el código de respuesta este entre 200 y 300
+                    val specialties = response.body()
+                    val specialtyOptions = ArrayList<String>()
+
+                    specialties?.forEach{
+                        specialtyOptions.add(it.name)
+                    }
+                    spinnerSpecialties.adapter = ArrayAdapter<String>(this@CreateAppointmentActivity, android.R.layout.simple_list_item_1, specialtyOptions)
+                }
+            }
+        })
     }
 
     private fun showAppointmentDataToConfirm() {
