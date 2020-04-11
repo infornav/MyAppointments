@@ -79,6 +79,10 @@ class CreateAppointmentActivity : AppCompatActivity() {
     }
 
     private fun loadHours(doctorId:Int, date:String){
+        if(date.isEmpty()) {
+            return
+        }
+
         val call = apiService.getHours(doctorId, date)
         call.enqueue(object: Callback<Schedule>{
             override fun onFailure(call: Call<Schedule>, t: Throwable) {
@@ -88,7 +92,18 @@ class CreateAppointmentActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Schedule>, response: Response<Schedule>) {
                 if (response.isSuccessful) { // [200...300)
                     val schedule = response.body()
-                    Toast.makeText(this@CreateAppointmentActivity, "morning: ${schedule?.morning?.size}, afternoon: ${schedule?.afternoon?.size}", Toast.LENGTH_SHORT).show()
+
+                    schedule?.let {
+                        tvSelectDoctorAndDate.visibility = View.GONE
+
+                        val intervals = it.morning + it.afternoon
+                        val hours = ArrayList<String>()
+                        intervals.forEach{interval ->
+                            hours.add(interval.start)
+                        }
+                        displayIntervalRadios(hours)
+                    }
+                    //Toast.makeText(this@CreateAppointmentActivity, "morning: ${schedule?.morning?.size}, afternoon: ${schedule?.afternoon?.size}", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -223,8 +238,7 @@ class CreateAppointmentActivity : AppCompatActivity() {
                     d.twoDigits()
                 )
             )
-            //etScheduledDate.error = null
-            displayRadioButtons()
+            etScheduledDate.error = null
         }
         //new dialog
         val dpDialog = DatePickerDialog(this, listener,year,month, dayOfMonth)
@@ -241,14 +255,20 @@ class CreateAppointmentActivity : AppCompatActivity() {
         dpDialog.show()
     }
 
-    private fun displayRadioButtons() {
+    private fun displayIntervalRadios(hours: ArrayList<String>) {
 //        rgTimes.clearCheck()
 //        rgTimes.removeAllViews()
         selectedTimeRadioButton = null
         rgLeft.removeAllViews()
         rgRight.removeAllViews()
 
-        val hours = arrayOf("3:00 PM","3:30 PM","4:00 PM","4:30 PM")
+        if(hours.isEmpty()){
+            tvNotAvailableHours.visibility = View.VISIBLE
+            return
+        }
+
+        tvNotAvailableHours.visibility = View.GONE
+        //val hours = arrayOf("3:00 PM","3:30 PM","4:00 PM","4:30 PM")
         var goToLeft = true
 
         hours.forEach {

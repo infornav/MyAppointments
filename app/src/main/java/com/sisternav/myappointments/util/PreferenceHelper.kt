@@ -1,4 +1,4 @@
-package com.sisternav.myappointments
+package com.sisternav.myappointments.util
 
 import android.content.Context
 import android.content.SharedPreferences
