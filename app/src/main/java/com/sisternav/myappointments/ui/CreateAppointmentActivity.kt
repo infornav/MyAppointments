@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sisternav.myappointments.R
 import com.sisternav.myappointments.io.ApiService
 import com.sisternav.myappointments.model.Doctor
+import com.sisternav.myappointments.model.Schedule
 import com.sisternav.myappointments.model.Specialty
 import kotlinx.android.synthetic.main.activity_create_appointment.*
 import kotlinx.android.synthetic.main.card_view_step_one.*
@@ -78,7 +79,21 @@ class CreateAppointmentActivity : AppCompatActivity() {
     }
 
     private fun loadHours(doctorId:Int, date:String){
-        Toast.makeText(this,"doctor: $doctorId, date: $date",Toast.LENGTH_SHORT).show()
+        val call = apiService.getHours(doctorId, date)
+        call.enqueue(object: Callback<Schedule>{
+            override fun onFailure(call: Call<Schedule>, t: Throwable) {
+                Toast.makeText(this@CreateAppointmentActivity, getString(R.string.error_loading_hours), Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<Schedule>, response: Response<Schedule>) {
+                if (response.isSuccessful) { // [200...300)
+                    val schedule = response.body()
+                    Toast.makeText(this@CreateAppointmentActivity, "morning: ${schedule?.morning?.size}, afternoon: ${schedule?.afternoon?.size}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+        //Toast.makeText(this,"doctor: $doctorId, date: $date",Toast.LENGTH_SHORT).show()
     }
 
     private fun listenDoctorAndDateChanges(){
