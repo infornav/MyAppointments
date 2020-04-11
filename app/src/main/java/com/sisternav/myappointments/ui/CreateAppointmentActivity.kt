@@ -214,11 +214,12 @@ class CreateAppointmentActivity : AppCompatActivity() {
         val listener = DatePickerDialog.OnDateSetListener{ datePicker, y, m, d ->
             //Toast.makeText(this,"$y-$m-$d",Toast.LENGTH_SHORT).show()
             selectedCalendar.set(y,m,d)
+
             etScheduledDate.setText(
                 resources.getString(
                     R.string.date_format,
                     y.toString(),
-                    m.twoDigits(),
+                    (m + 1).twoDigits(),
                     d.twoDigits()
                 )
             )
