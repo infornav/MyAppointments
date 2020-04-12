@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center_horizontal"
+            tools:text="Médico 1"
              />
         <TextView
             android:id="@+id/tvScheduledDate"
@@ -41,6 +42,66 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             tools:text="A las 3:00 PM"/>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="Estado"/>
+            <ImageButton
+                android:id="@+id/ibExpand"
+                android:src="@drawable/ic_expand_more"
+                tools:src="@drawable/ic_expand_less"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_margin="8dp"
+                android:layout_gravity="end"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutDetails"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvSpecialty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                tools:text="Oftalmología"/>
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                tools:text="Tipo"/>
+            <TextView
+                android:id="@+id/tvCreatedAt"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                tools:text="Creado"/>
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_marginBottom="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                tools:text="Descripción de dolencia"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

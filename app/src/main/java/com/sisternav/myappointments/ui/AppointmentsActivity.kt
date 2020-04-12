@@ -4,28 +4,57 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sisternav.myappointments.R
+import com.sisternav.myappointments.io.ApiService
 import com.sisternav.myappointments.model.Appointment
+import com.sisternav.myappointments.util.PreferenceHelper
+import com.sisternav.myappointments.util.PreferenceHelper.get
+import com.sisternav.myappointments.util.toast
 import kotlinx.android.synthetic.main.activity_appointments.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AppointmentsActivity : AppCompatActivity() {
+    private val apiService: ApiService by lazy{
+        ApiService.create()
+    }
+
+    private val preferences by lazy{
+        PreferenceHelper.defaultPrefs(this)
+    }
+
+    private val appointmentAdapter = AppointmentAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_appointments)
 
-        val appointments = ArrayList<Appointment>()
-        appointments.add(
-            Appointment(1,"Médico Test","13/12/2020","3:00 PM")
-        )
-        appointments.add(
-            Appointment(2,"Médico BB","14/12/2020","4:30 PM")
-        )
-        appointments.add(
-            Appointment(3,"Médico CC","15/12/2020","7:00 PM")
-        )
+        loadAppointments()
 
         rvAppointments.layoutManager = LinearLayoutManager(this)
-        rvAppointments.adapter =
-            AppointmentAdapter(appointments)
+        rvAppointments.adapter = appointmentAdapter
+    }
+
+    private fun loadAppointments(){
+        val jwt = preferences["jwt",""]
+        val call = apiService.getAppointments("Bearer $jwt")
+
+        call.enqueue(object: Callback<ArrayList<Appointment>>{
+            override fun onFailure(call: Call<ArrayList<Appointment>>, t: Throwable) {
+                toast(t.localizedMessage)
+            }
+
+            override fun onResponse(
+                call: Call<ArrayList<Appointment>>,
+                response: Response<ArrayList<Appointment>>
+            ) {
+                if(response.isSuccessful){
+                    response.body()?.let{
+                        appointmentAdapter.appointments = it
+                        appointmentAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        })
     }
 }

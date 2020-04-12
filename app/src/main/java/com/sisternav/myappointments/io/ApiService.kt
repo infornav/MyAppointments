@@ -1,6 +1,7 @@
 package com.sisternav.myappointments.io
 
 import com.sisternav.myappointments.io.response.LoginResponse
+import com.sisternav.myappointments.model.Appointment
 import com.sisternav.myappointments.model.Doctor
 import com.sisternav.myappointments.model.Schedule
 import com.sisternav.myappointments.model.Specialty
@@ -27,6 +28,9 @@ interface ApiService {
 
     @POST("logout")
     fun postLogout(@Header("Authorization") authHeader: String) : Call<Void>
+
+    @GET("appointments")
+    fun getAppointments(@Header("Authorization") authHeader: String) : Call<ArrayList<Appointment>>
 
     companion object Factory{
         private const val BASE_URL = "http://165.227.186.92/api/"
