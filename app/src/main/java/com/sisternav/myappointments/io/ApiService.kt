@@ -1,6 +1,7 @@
 package com.sisternav.myappointments.io
 
 import com.sisternav.myappointments.io.response.LoginResponse
+import com.sisternav.myappointments.io.response.SimpleResponse
 import com.sisternav.myappointments.model.Appointment
 import com.sisternav.myappointments.model.Doctor
 import com.sisternav.myappointments.model.Schedule
@@ -31,6 +32,27 @@ interface ApiService {
 
     @GET("appointments")
     fun getAppointments(@Header("Authorization") authHeader: String) : Call<ArrayList<Appointment>>
+
+    @POST("appointments")
+    @Headers("Accept: application/json")
+    fun storeAppointment(
+            @Header("Authorization") authHeader: String,
+            @Query("description" ) description: String,
+            @Query("specialty_id") specialty_id: Int,
+            @Query("doctor_id") doctor_id: Int,
+            @Query("scheduled_date") scheduled_date: String,
+            @Query("scheduled_time") scheduled_time: String,
+            @Query("type") type: String
+        ) : Call<SimpleResponse>
+
+    @POST("register")
+    @Headers("Accept: application/json")
+    fun postRegister(
+        @Query("name" ) name: String,
+        @Query("email") email: String,
+        @Query("password") password: String,
+        @Query("password_confirmation") passwordConfirmation: String
+    ) : Call<LoginResponse>
 
     companion object Factory{
         private const val BASE_URL = "http://165.227.186.92/api/"
