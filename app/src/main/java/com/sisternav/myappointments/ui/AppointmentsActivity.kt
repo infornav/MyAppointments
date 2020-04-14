@@ -2,6 +2,7 @@ package com.sisternav.myappointments.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sisternav.myappointments.R
 import com.sisternav.myappointments.io.ApiService
@@ -41,6 +42,7 @@ class AppointmentsActivity : AppCompatActivity() {
 
         call.enqueue(object: Callback<ArrayList<Appointment>>{
             override fun onFailure(call: Call<ArrayList<Appointment>>, t: Throwable) {
+                Log.d("TOKEN_ERROR","error: ${t.message}")
                 toast(t.localizedMessage)
             }
 
@@ -48,6 +50,8 @@ class AppointmentsActivity : AppCompatActivity() {
                 call: Call<ArrayList<Appointment>>,
                 response: Response<ArrayList<Appointment>>
             ) {
+                Log.d("TOKEN_ERROR","codigo: ${response.code().toString()}")
+                Log.d("TOKEN_ERROR","mensaje: ${response.message()}")
                 if(response.isSuccessful){
                     response.body()?.let{
                         appointmentAdapter.appointments = it
@@ -55,6 +59,7 @@ class AppointmentsActivity : AppCompatActivity() {
                     }
                 }
             }
+
         })
     }
 }

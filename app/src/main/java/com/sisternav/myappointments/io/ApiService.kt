@@ -54,6 +54,12 @@ interface ApiService {
         @Query("password_confirmation") passwordConfirmation: String
     ) : Call<LoginResponse>
 
+    @POST("fcm/token")
+    fun postToken(
+        @Header("Authorization") authHeader: String,
+        @Query("device_token" ) token: String
+    ) : Call<Void>
+
     companion object Factory{
         private const val BASE_URL = "http://165.227.186.92/api/"
 
